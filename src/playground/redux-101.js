@@ -1,11 +1,45 @@
 import { createStore } from 'redux';
 
-const store = createStore((state = { count: 0 }) => {
-  return state;
+const incrementCount = ({ incrementBy = 1 } = {}) => ({
+  type: 'INCREMENT',
+  incrementBy
 });
 
-console.log(store.getState());
+const decrementCount = ({ decrementBy = -1 } = {}) => ({
+  type: 'DECREMENT',
+  decrementBy
+});
 
-// Actions
-// I'd like to increment the count
-// I'd like to reset the count to zero
+const setCount = ({ count }) => ({
+  type: 'SET_COUNT',
+  count
+});
+
+const reset = () => ({ type: 'RESET' });
+
+const store = createStore((state = { count: 0 }, action) => {
+  switch (action.type) {
+    case 'INCREMENT':
+      return { count: state.count + action.incrementBy };
+    case 'DECREMENT':
+      return { count: state.count - 1 };
+    case 'RESET':
+      return { count: 0 };
+    case 'COUNT':
+      return { count: action.count };
+    default:
+      return state;
+  }
+});
+
+store.subscribe(() => console.log(store.getState()));
+
+store.dispatch(incrementCount());
+
+store.dispatch(reset());
+
+store.dispatch(decrementCount({ decrementBy: 10 }));
+
+store.dispatch(setCount({ count: 101 }));
+
+console.log(store.getState());
